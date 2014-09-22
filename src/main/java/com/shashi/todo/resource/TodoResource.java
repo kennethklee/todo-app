@@ -69,9 +69,9 @@ public class TodoResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Todo create(Todo todo) {
+	public boolean create(Todo todo) {
 		todoService.create(todo);
-		return todo;
+		return true;
 	}
 
 	@PUT

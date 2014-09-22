@@ -26,11 +26,17 @@
 	</bean>
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg name="mongo" ref="mongo"/>
-        <constructor-arg name="databaseName" value="#{mongoURI.getDatabase()}"/>
-    </bean>
+		<constructor-arg name="mongo" ref="mongo" />
+		<constructor-arg name="databaseName" value="#{mongoURI.getDatabase()}" />   
+		<!-- <constructor-arg name="userCredentials" ref="userCredentials" /> -->
+	</bean>
 
-    <bean class="com.mongodb.Mongo" id="mongo">
-        <constructor-arg ref="mongoURI" />
-    </bean>
+	<bean class="com.mongodb.Mongo" id="mongo">
+		<constructor-arg ref="mongoURI" />
+	</bean>
+
+	<!-- <bean id="userCredentials" class="org.springframework.data.authentication.UserCredentials">
+		<constructor-arg name="username" value="#{mongoURI.getUsername()}" />
+		<constructor-arg name="password" value="#{new java.lang.String(mongoURI.getPassword())}" />
+	</bean> -->
 </beans>

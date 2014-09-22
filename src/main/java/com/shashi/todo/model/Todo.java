@@ -1,35 +1,52 @@
 package com.shashi.todo.model;
 
+import java.util.UUID;
+
 public class Todo {
 
-	private Integer id;
+	private String todoId;
 
-	private String firstName;
+	private String title;
 
-	private String lastName;
+	private String body;
 
-	public Integer getId() {
-		return id;
+	private boolean done;
+
+	public Todo() {
+		this.done = false;
+		this.todoId = UUID.randomUUID().toString();
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getTodoId() {
+		return todoId;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public void setTodoId(String todoId) {
+		this.todoId = todoId;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public String getBody() {
+		return body;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public void setBody(String body) {
+		this.body = body;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }
