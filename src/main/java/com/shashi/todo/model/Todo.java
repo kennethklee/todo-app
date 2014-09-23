@@ -1,8 +1,11 @@
 package com.shashi.todo.model;
 
-import java.util.UUID;
+import java.io.Serializable;
 
-public class Todo {
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class Todo implements Serializable {
 
 	private String todoId;
 
@@ -14,7 +17,6 @@ public class Todo {
 
 	public Todo() {
 		this.done = false;
-		this.todoId = UUID.randomUUID().toString();
 	}
 
 	public String getTodoId() {

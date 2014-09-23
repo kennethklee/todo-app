@@ -1,4 +1,4 @@
-package com.shashi.todo.service;
+package com.shashi.todo.dao;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,16 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.shashi.todo.model.Todo;
 
 @Service
-public class TodoServiceImpl implements TodoService {
+public class TodoDAOImpl implements TodoDAO {
 
 	protected static Logger logger = LoggerFactory
-			.getLogger(TodoServiceImpl.class);;
+			.getLogger(TodoDAOImpl.class);;
 
 	private static final String COLLECTION = "todo";
 
@@ -53,32 +52,24 @@ public class TodoServiceImpl implements TodoService {
 	}
 
 	@Override
-	public boolean update(Todo todo) {
+	public void update(Todo todo) {
 		logger.debug("Adding a new user");
 		try {
-			Query query = new Query(Criteria.where("todoid").is(
-					todo.getTodoId()));
-			Update update = new Update();
-			update.set("done", todo.isDone());
-			mongoTemplate.updateFirst(query, update, Todo.class);
-			return true;
+			mongoTemplate.save(todo);
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to remove todo", e);
-			return false;
 		}
+
 	}
 
 	@Override
-	public boolean delete(Todo todo) {
-		logger.debug("Removing a todo");
+	public void delete(Todo todo) {
+		logger.debug("Adding a new user");
+
 		try {
-			Query query = new Query(Criteria.where("todoId").is(
-					todo.getTodoId()));
-			mongoTemplate.remove(query, Todo.class);
-			return true;
+			mongoTemplate.remove(todo);
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to remove todo", e);
-			return false;
 		}
 
 	}
