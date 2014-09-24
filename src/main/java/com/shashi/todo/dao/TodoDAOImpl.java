@@ -16,8 +16,7 @@ import com.shashi.todo.model.Todo;
 @Service
 public class TodoDAOImpl implements TodoDAO {
 
-	protected static Logger logger = LoggerFactory
-			.getLogger(TodoDAOImpl.class);;
+	protected static Logger logger = LoggerFactory.getLogger(TodoDAOImpl.class);;
 
 	private static final String COLLECTION = "todo";
 
@@ -38,7 +37,7 @@ public class TodoDAOImpl implements TodoDAO {
 	}
 
 	@Override
-	public void create(Todo todo) {
+	public boolean create(Todo todo) {
 		logger.debug("Adding a new user");
 
 		try {
@@ -47,31 +46,32 @@ public class TodoDAOImpl implements TodoDAO {
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to add new user",
 					e);
+			return false;
 		}
-
+		return true;
 	}
 
 	@Override
-	public void update(Todo todo) {
+	public boolean update(Todo todo) {
 		logger.debug("Adding a new user");
 		try {
 			mongoTemplate.save(todo);
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to remove todo", e);
+			return false;
 		}
-
+		return true;
 	}
 
 	@Override
-	public void delete(Todo todo) {
-		logger.debug("Adding a new user");
-
+	public boolean delete(Todo todo) {
 		try {
 			mongoTemplate.remove(todo);
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to remove todo", e);
+			return false;
 		}
-
+		return true;
 	}
 
 	@Override

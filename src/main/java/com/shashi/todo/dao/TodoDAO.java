@@ -8,11 +8,11 @@ public interface TodoDAO {
 
 	public Todo findById(String id);
 
-	public void create(Todo person);
+	public boolean create(Todo todo);
 
-	public void update(Todo person);
+	public boolean update(Todo todo);
 
-	public void delete(Todo person);
+	public boolean delete(Todo todo);
 
 	public List<Todo> findByName(String query);
 

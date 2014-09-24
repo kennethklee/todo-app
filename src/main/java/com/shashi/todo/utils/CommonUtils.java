@@ -1,6 +1,6 @@
 package com.shashi.todo.utils;
 
-import com.shashi.todo.model.ExceptionReport;
+import com.shashi.todo.model.BusinessException;
 
 public class CommonUtils {
 
@@ -8,10 +8,9 @@ public class CommonUtils {
 		// closed
 	}
 
-	public static ExceptionReport getExceptionReport(String code, String message) {
-
-		return new ExceptionReport("Data retrieval", message, code, null);
-
+	public static BusinessException getExceptionReport(int status, int code,
+			String message) {
+		return new BusinessException(status, message, code);
 	}
 
 }
