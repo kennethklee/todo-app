@@ -1,4 +1,4 @@
-package com.shashi.todo.service;
+package com.shashi.todo.service.impl;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +13,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.shashi.todo.model.Todo;
+import com.shashi.todo.service.SmsService;
+import com.shashi.todo.service.TodoService;
+import com.twilio.sdk.TwilioRestException;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -24,6 +27,9 @@ public class TodoServiceImpl implements TodoService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
+	@Autowired
+	private SmsService smsService;
 
 	@Override
 	public Todo findById(String id) {
@@ -61,6 +67,14 @@ public class TodoServiceImpl implements TodoService {
 			Update update = new Update();
 			update.set("done", todo.isDone());
 			mongoTemplate.updateFirst(query, update, Todo.class);
+			if (todo.isDone()) {
+				smsService.sendMessage("+13157068730", "\"" + todo.getBody()
+						+ "\" has been marked done");
+			}
+			return true;
+		} catch (TwilioRestException ex) {
+			logger.error("An error has occurred while trying to update todo",
+					ex);
 			return true;
 		} catch (Exception e) {
 			logger.error("An error has occurred while trying to remove todo", e);
