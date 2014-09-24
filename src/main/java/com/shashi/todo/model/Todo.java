@@ -8,11 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Todo implements Serializable {
 
 	private String todoId;
-
 	private String title;
-
 	private String body;
-
 	private boolean done;
 
 	public Todo() {
