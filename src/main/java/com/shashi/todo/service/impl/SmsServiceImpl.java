@@ -27,17 +27,21 @@ public class SmsServiceImpl implements SmsService {
 	private String from;
 
 	@Override
-	public void sendMessage(String to, String message)
-			throws TwilioRestException {
+	public void sendMessage(String to, String message) {
+		try {
+			TwilioRestClient client = new TwilioRestClient(accountSID,
+					authToken);
+			Account mainAccount = client.getAccount();
+			MessageFactory messageFactory = mainAccount.getMessageFactory();
+			final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
+			messageParams.add(new BasicNameValuePair("To", to));
+			messageParams.add(new BasicNameValuePair("From", from));
+			messageParams.add(new BasicNameValuePair("Body", message));
 
-		TwilioRestClient client = new TwilioRestClient(accountSID, authToken);
-		Account mainAccount = client.getAccount();
-		MessageFactory messageFactory = mainAccount.getMessageFactory();
-		final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
-		messageParams.add(new BasicNameValuePair("To", to));
-		messageParams.add(new BasicNameValuePair("From", from));
-		messageParams.add(new BasicNameValuePair("Body", message));
-		messageFactory.create(messageParams);
+			messageFactory.create(messageParams);
+		} catch (TwilioRestException supressed) {
+			supressed.printStackTrace();
+		}
 	}
 
 }

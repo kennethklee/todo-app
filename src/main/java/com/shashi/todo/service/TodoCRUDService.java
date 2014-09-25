@@ -9,9 +9,9 @@ public interface TodoCRUDService {
 
 	public Todo findById(String id) throws BusinessException;
 
-	public boolean create(Todo todo) throws BusinessException;
+	public void create(Todo todo) throws BusinessException;
 
-	public boolean update(Todo todo) throws BusinessException;
+	public void update(Todo todo) throws BusinessException;
 
 	public void delete(Todo todo) throws BusinessException;
 

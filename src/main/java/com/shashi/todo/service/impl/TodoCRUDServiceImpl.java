@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.shashi.todo.dao.TodoDAO;
 import com.shashi.todo.model.BusinessException;
 import com.shashi.todo.model.Todo;
+import com.shashi.todo.service.SmsService;
 import com.shashi.todo.service.TodoCRUDService;
 import com.shashi.todo.utils.TodoConstants;
 
@@ -20,30 +21,34 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	@Autowired
 	private TodoDAO todoDao;
 
+	@Autowired
+	private SmsService smsService;
+
 	@Override
 	public Todo findById(String id) throws BusinessException {
 		Todo todo = todoDao.findById(id);
 		if (todo == null) {
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(),
-					"No todo item found with id \"" + todo.getTodoId() + "\"",
+					"No todo item found with id \"" + id + "\"",
 					TodoConstants.NO_DATA_FOUND);
 		}
 		return todo;
 	}
 
 	@Override
-	public boolean create(Todo todo) throws BusinessException {
+	public void create(Todo todo) throws BusinessException {
 		validateRequest(todo);
-		return todoDao.create(todo);
-	}
-
-	@Override
-	public boolean update(Todo todo) throws BusinessException {
-		if (isExistingTodo(todo)) {
-			return todoDao.update(todo);
+		if (todoDao.create(todo)) {
+			if (todo.isDone()) {
+				smsService.sendMessage("315-706-8730",
+						"Task \"" + todo.getTitle() + "\" is marked as done");
+			}
+		} else {
+			throw new BusinessException(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					"Failed to add Todo", TodoConstants.TODO_CREATE_FAILED);
 		}
-		return create(todo);
 	}
 
 	@Override
@@ -70,7 +75,6 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
 					"Deletion failed", TodoConstants.TODO_ALL_DELETION_FAILED);
 		}
-
 	}
 
 	@Override
@@ -87,6 +91,27 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	@Override
 	public List<Todo> findAll() {
 		return todoDao.findAll();
+	}
+
+	@Override
+	public void update(Todo todo) throws BusinessException {
+		boolean isSMSSent = false;
+		Todo todoDB = todoDao.findById(todo.getTodoId());
+		if (todoDB == null) {
+			create(todo);
+		} else {
+			isSMSSent = todoDB.isDone();
+			if (!todoDao.update(todo)) {
+				throw new BusinessException(
+						Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+						"Updation failed for id \"" + todo.getTodoId() + "\"",
+						TodoConstants.TODO_UPDATE_FAILED);
+			}
+			if (todo.isDone() && !isSMSSent) {
+				smsService.sendMessage("315-706-8730",
+						"Task \"" + todo.getTitle() + "\" is marked as done");
+			}
+		}
 	}
 
 	private boolean validateRequest(Todo todo) throws BusinessException {
@@ -119,5 +144,4 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		}
 		return false;
 	}
-
 }

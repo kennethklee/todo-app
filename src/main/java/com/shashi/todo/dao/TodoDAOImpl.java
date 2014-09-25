@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.shashi.todo.model.Todo;
@@ -30,8 +31,7 @@ public class TodoDAOImpl implements TodoDAO {
 			return mongoTemplate.findOne(
 					new Query(Criteria.where("todoId").is(id)), Todo.class);
 		} catch (Exception e) {
-			logger.error(
-					"An error has occurred while trying to find todo by id", e);
+			logger.error("Search failed", e);
 		}
 		return null;
 	}
@@ -44,8 +44,7 @@ public class TodoDAOImpl implements TodoDAO {
 			todo.setTodoId(UUID.randomUUID().toString());
 			mongoTemplate.insert(todo, COLLECTION);
 		} catch (Exception e) {
-			logger.error("An error has occurred while trying to add new user",
-					e);
+			logger.error("Create failed", e);
 			return false;
 		}
 		return true;
@@ -53,11 +52,16 @@ public class TodoDAOImpl implements TodoDAO {
 
 	@Override
 	public boolean update(Todo todo) {
-		logger.debug("Adding a new user");
 		try {
-			mongoTemplate.save(todo);
+
+			Query query = new Query(Criteria.where("todoId").is(
+					todo.getTodoId()));
+			Update update = new Update();
+			update.set("body", todo.getBody());
+			update.set("done", todo.isDone());
+			mongoTemplate.updateMulti(query, update, Todo.class);
 		} catch (Exception e) {
-			logger.error("An error has occurred while trying to remove todo", e);
+			logger.error("Update failed", e);
 			return false;
 		}
 		return true;
@@ -68,7 +72,7 @@ public class TodoDAOImpl implements TodoDAO {
 		try {
 			mongoTemplate.remove(todo);
 		} catch (Exception e) {
-			logger.error("An error has occurred while trying to remove todo", e);
+			logger.error("Remove failed", e);
 			return false;
 		}
 		return true;
@@ -76,26 +80,21 @@ public class TodoDAOImpl implements TodoDAO {
 
 	@Override
 	public List<Todo> findByName(String title) {
-		logger.debug("find all todos");
 		try {
 			return mongoTemplate.find(
 					new Query(Criteria.where("title").is(title)), Todo.class);
 		} catch (Exception e) {
-			logger.error(
-					"An error has occurred while trying find all todos by name",
-					e);
+			logger.error("Search all by name failed", e);
 		}
 		return null;
 	}
 
 	@Override
 	public List<Todo> findAll() {
-		logger.debug("find all todos");
-
 		try {
 			return mongoTemplate.findAll(Todo.class, COLLECTION);
 		} catch (Exception e) {
-			logger.error("An error has occurred while trying find all todos", e);
+			logger.error("Search all failed", e);
 		}
 		return null;
 	}
@@ -105,7 +104,7 @@ public class TodoDAOImpl implements TodoDAO {
 		try {
 			mongoTemplate.dropCollection(Todo.class);
 		} catch (Exception e) {
-			logger.error("An error has occurred while trying to remove todo", e);
+			logger.error("Delete all failed", e);
 			return false;
 		}
 		return true;

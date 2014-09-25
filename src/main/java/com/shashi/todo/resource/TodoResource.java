@@ -85,9 +85,7 @@ public class TodoResource {
 		if (!StringUtils.isEmpty(id)) {
 			todo.setTodoId(id);
 		}
-		if (todoCRUDService.update(todo)) {
-			return Response.status(Response.Status.OK).entity(todo).build();
-		}
+		todoCRUDService.update(todo);
 		return Response.status(Response.Status.OK).entity(todo).build();
 	}
 
