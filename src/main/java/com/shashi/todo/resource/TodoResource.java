@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,9 @@ public class TodoResource {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response update(@PathParam("id") String id, Todo todo)
 			throws BusinessException {
+		if (!StringUtils.isEmpty(id)) {
+			todo.setTodoId(id);
+		}
 		if (todoCRUDService.update(todo)) {
 			return Response.status(Response.Status.OK).entity(todo).build();
 		}
@@ -89,12 +93,18 @@ public class TodoResource {
 
 	@DELETE
 	@Path("{id}")
-	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response delete(@PathParam("id") String id, Todo todo)
 			throws BusinessException {
 		todoCRUDService.delete(todo);
-		return Response.status(Response.Status.OK).build();
+		return Response.status(Response.Status.NO_CONTENT).build();
+	}
+
+	@DELETE
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response deleteAll() throws BusinessException {
+		todoCRUDService.deleteAll();
+		return Response.status(Response.Status.NO_CONTENT).build();
 
 	}
 }

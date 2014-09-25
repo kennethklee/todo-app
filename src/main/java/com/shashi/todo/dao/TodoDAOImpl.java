@@ -100,4 +100,15 @@ public class TodoDAOImpl implements TodoDAO {
 		return null;
 	}
 
+	@Override
+	public boolean deleteAll() {
+		try {
+			mongoTemplate.dropCollection(Todo.class);
+		} catch (Exception e) {
+			logger.error("An error has occurred while trying to remove todo", e);
+			return false;
+		}
+		return true;
+	}
+
 }

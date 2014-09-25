@@ -17,4 +17,6 @@ public interface TodoDAO {
 	public List<Todo> findByName(String query);
 
 	public List<Todo> findAll();
+
+	public boolean deleteAll();
 }

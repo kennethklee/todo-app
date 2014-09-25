@@ -26,7 +26,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		if (todo == null) {
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(),
-					"No todo item found for given id",
+					"No todo item found with id \"" + todo.getTodoId() + "\"",
 					TodoConstants.NO_DATA_FOUND);
 		}
 		return todo;
@@ -36,6 +36,57 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	public boolean create(Todo todo) throws BusinessException {
 		validateRequest(todo);
 		return todoDao.create(todo);
+	}
+
+	@Override
+	public boolean update(Todo todo) throws BusinessException {
+		if (isExistingTodo(todo)) {
+			return todoDao.update(todo);
+		}
+		return create(todo);
+	}
+
+	@Override
+	public void delete(Todo todo) throws BusinessException {
+		if (isExistingTodo(todo)) {
+			if (!todoDao.delete(todo)) {
+				throw new BusinessException(
+						Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+						"Deletion failed for id \"" + todo.getTodoId() + "\"",
+						TodoConstants.TODO_DELETION_FAILED);
+			}
+		} else {
+			throw new BusinessException(
+					Response.Status.NOT_FOUND.getStatusCode(),
+					"No todo item found with id \"" + todo.getTodoId() + "\"",
+					TodoConstants.NO_DATA_FOUND);
+		}
+	}
+
+	@Override
+	public void deleteAll() throws BusinessException {
+		if (!todoDao.deleteAll()) {
+			throw new BusinessException(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+					"Deletion failed", TodoConstants.TODO_ALL_DELETION_FAILED);
+		}
+
+	}
+
+	@Override
+	public List<Todo> findByName(String query) throws BusinessException {
+		if (StringUtils.isEmpty(query)) {
+			throw new BusinessException(
+					Response.Status.BAD_REQUEST.getStatusCode(),
+					"Title is a mandatory field",
+					TodoConstants.TODO_CREATE_REQ_INVALID);
+		}
+		return todoDao.findByName(query);
+	}
+
+	@Override
+	public List<Todo> findAll() {
+		return todoDao.findAll();
 	}
 
 	private boolean validateRequest(Todo todo) throws BusinessException {
@@ -62,43 +113,11 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		return true;
 	}
 
-	@Override
-	public boolean update(Todo todo) throws BusinessException {
-		if (isExistingTodo(todo)) {
-			return todoDao.update(todo);
-		}
-		return create(todo);
-	}
-
 	private boolean isExistingTodo(Todo todo) throws BusinessException {
 		if (todoDao.findById(todo.getTodoId()) != null) {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean delete(Todo todo) throws BusinessException {
-		if (isExistingTodo(todo)) {
-			return todoDao.delete(todo);
-		}
-		return false;
-	}
-
-	@Override
-	public List<Todo> findByName(String query) throws BusinessException {
-		if (StringUtils.isEmpty(query)) {
-			throw new BusinessException(
-					Response.Status.BAD_REQUEST.getStatusCode(),
-					"Title is a mandatory field",
-					TodoConstants.TODO_CREATE_REQ_INVALID);
-		}
-		return todoDao.findByName(query);
-	}
-
-	@Override
-	public List<Todo> findAll() {
-		return todoDao.findAll();
 	}
 
 }

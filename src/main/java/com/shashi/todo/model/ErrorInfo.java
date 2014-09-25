@@ -42,7 +42,7 @@ public class ErrorInfo {
 
 	public ErrorInfo(BusinessException ex) {
 		try {
-			BeanUtils.copyProperties(this, ex);
+			BeanUtils.copyProperties(ex, this);
 		} catch (BeansException e) {
 			e.printStackTrace();
 		}
