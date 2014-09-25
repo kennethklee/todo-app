@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shashi.todo.dao.TodoDAO;
+import com.shashi.todo.helper.TodoConstants;
 import com.shashi.todo.model.BusinessException;
 import com.shashi.todo.model.Todo;
 import com.shashi.todo.service.SmsService;
 import com.shashi.todo.service.TodoCRUDService;
-import com.shashi.todo.utils.TodoConstants;
 
 @Service
 public class TodoCRUDServiceImpl implements TodoCRUDService {

@@ -1,4 +1,4 @@
-package com.shashi.todo.utils;
+package com.shashi.todo.helper;
 
 import com.shashi.todo.model.BusinessException;
 

@@ -4,10 +4,10 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 
-import com.shashi.todo.utils.BusinessExceptionMapper;
-import com.shashi.todo.utils.GenericExceptionMapper;
-import com.shashi.todo.utils.LoggingResponseFilter;
-import com.shashi.todo.utils.NotFoundExceptionMapper;
+import com.shashi.todo.helper.BusinessExceptionMapper;
+import com.shashi.todo.helper.GenericExceptionMapper;
+import com.shashi.todo.helper.LoggingResponseFilter;
+import com.shashi.todo.helper.NotFoundExceptionMapper;
 
 public class TodoApplicationConfig extends ResourceConfig {
 
@@ -20,5 +20,4 @@ public class TodoApplicationConfig extends ResourceConfig {
 		register(NotFoundExceptionMapper.class);
 		register(BusinessExceptionMapper.class);
 	}
-
 }

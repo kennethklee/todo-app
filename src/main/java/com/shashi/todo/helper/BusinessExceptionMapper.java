@@ -1,4 +1,4 @@
-package com.shashi.todo.utils;
+package com.shashi.todo.helper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

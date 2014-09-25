@@ -26,8 +26,13 @@ public class SmsServiceImpl implements SmsService {
 	@Value("#{systemEnvironment['TWILIO_FROM']}")
 	private String from;
 
+	@Value("#{systemEnvironment['TWILIO_ENABLED']}")
+	private String isEnabled;
+
 	@Override
 	public void sendMessage(String to, String message) {
+		if (!("Y").equals(isEnabled))
+			return;
 		try {
 			TwilioRestClient client = new TwilioRestClient(accountSID,
 					authToken);

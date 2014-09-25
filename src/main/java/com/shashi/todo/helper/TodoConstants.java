@@ -1,4 +1,4 @@
-package com.shashi.todo.utils;
+package com.shashi.todo.helper;
 
 public class TodoConstants {
 	public static final int TODO_CREATE_REQ_INVALID = 1000;
