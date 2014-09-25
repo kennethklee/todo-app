@@ -10,7 +10,7 @@
 		<org.springframework.version>3.1.1.RELEASE</org.springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.2.6.RELEASE</spring.version>
-		<jetty.version>9.0.7.v20131107</jetty.version> <!-- Adapt this to a version found on http://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-maven-plugin/ -->
+		<jetty.version>9.0.7.v20131107</jetty.version>
 		<logback.version>1.1.1</logback.version>
 		<jcloverslf4j.version>1.7.6</jcloverslf4j.version>
 		<spring.data.mongodb.version>1.2.0.RELEASE</spring.data.mongodb.version>
@@ -31,6 +31,16 @@
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 	</repositories>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.3.4</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 
 	<dependencies>
@@ -155,8 +165,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -188,13 +198,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.3.4</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>
