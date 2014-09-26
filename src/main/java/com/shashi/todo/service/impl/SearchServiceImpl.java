@@ -14,10 +14,9 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +27,7 @@ import com.shashi.todo.service.SearchService;
 @Service
 public class SearchServiceImpl implements SearchService {
 
-	final static Logger logger = LoggerFactory
-			.getLogger(SearchServiceImpl.class);
+	final static Logger logger = Logger.getLogger(SearchServiceImpl.class);
 
 	@Autowired
 	private JestClient jestClient;

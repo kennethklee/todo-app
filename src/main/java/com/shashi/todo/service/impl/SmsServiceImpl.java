@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import com.twilio.sdk.resource.instance.Account;
 
 @Service
 public class SmsServiceImpl implements SmsService {
+
+	final static Logger logger = Logger.getLogger(SmsServiceImpl.class);
 
 	@Value("#{systemEnvironment['TWILIO_SID']}")
 	private String accountSID;
@@ -46,6 +49,7 @@ public class SmsServiceImpl implements SmsService {
 			messageFactory.create(messageParams);
 		} catch (TwilioRestException supressed) {
 			supressed.printStackTrace();
+			logger.error("Failed to send sms", supressed);
 		}
 	}
 
