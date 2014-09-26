@@ -71,7 +71,7 @@ public class SearchServiceImpl implements SearchService {
 		try {
 			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(QueryBuilders.multiMatchQuery(query,
-					"title^", "body"));
+					"title^3", "body"));
 
 			Search search = new Search.Builder(searchSourceBuilder.toString())
 					.addIndex("todo_app").addType("todo").build();
