@@ -8,10 +8,10 @@ public interface SearchService {
 
 	public void createIndex(Todo todo);
 
-	public List<Todo> getIndex(Todo todo);
-
 	public void updateIndex(Todo todo);
 
 	public void deleteIndex(Todo todo);
+
+	List<Todo> search(String query);
 
 }

@@ -12,6 +12,7 @@ import com.shashi.todo.dao.TodoDAO;
 import com.shashi.todo.helper.TodoConstants;
 import com.shashi.todo.model.BusinessException;
 import com.shashi.todo.model.Todo;
+import com.shashi.todo.service.SearchService;
 import com.shashi.todo.service.SmsService;
 import com.shashi.todo.service.TodoCRUDService;
 
@@ -23,6 +24,9 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 
 	@Autowired
 	private SmsService smsService;
+
+	@Autowired
+	private SearchService searchService;
 
 	@Override
 	public Todo findById(String id) throws BusinessException {
@@ -40,6 +44,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	public void create(Todo todo) throws BusinessException {
 		validateRequest(todo);
 		if (todoDao.create(todo)) {
+			searchService.createIndex(todo);
 			if (todo.isDone()) {
 				smsService.sendMessage("315-706-8730",
 						"Task \"" + todo.getTitle() + "\" is marked as done");
@@ -60,6 +65,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 						"Deletion failed for id \"" + todo.getTodoId() + "\"",
 						TodoConstants.TODO_DELETION_FAILED);
 			}
+			searchService.deleteIndex(todo);
 		} else {
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(),
@@ -85,7 +91,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 					"Title is a mandatory field",
 					TodoConstants.TODO_CREATE_REQ_INVALID);
 		}
-		return todoDao.findByName(query);
+		return searchService.search(query);
 	}
 
 	@Override
@@ -107,6 +113,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 						"Updation failed for id \"" + todo.getTodoId() + "\"",
 						TodoConstants.TODO_UPDATE_FAILED);
 			}
+			searchService.createIndex(todo);
 			if (todo.isDone() && !isSMSSent) {
 				smsService.sendMessage("315-706-8730",
 						"Task \"" + todo.getTitle() + "\" is marked as done");

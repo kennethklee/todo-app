@@ -1,5 +1,7 @@
 package com.shashi.todo.model;
 
+import io.searchbox.annotations.JestId;
+
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -7,7 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Todo implements Serializable {
 
+	@JestId
 	private String todoId;
+
 	private String title;
 	private String body;
 	private boolean done;
