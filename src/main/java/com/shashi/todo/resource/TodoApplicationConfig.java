@@ -14,6 +14,7 @@ public class TodoApplicationConfig extends ResourceConfig {
 	public TodoApplicationConfig() {
 		register(RequestContextFilter.class);
 		register(TodoResource.class);
+		register(RegisterNumber.class);
 		register(JacksonFeature.class);
 		register(LoggingResponseFilter.class);
 		register(GenericExceptionMapper.class);
