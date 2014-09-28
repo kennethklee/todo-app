@@ -6,12 +6,12 @@ import com.shashi.todo.model.Todo;
 
 public interface SearchService {
 
-	public void createIndex(Todo todo);
+	public void create(Todo todo);
 
-	public void updateIndex(Todo todo);
+	public void update(Todo todo);
 
-	public void deleteIndex(Todo todo);
+	public List<Todo> search(String query);
 
-	List<Todo> search(String query);
+	public void delete(Todo todo);
 
 }

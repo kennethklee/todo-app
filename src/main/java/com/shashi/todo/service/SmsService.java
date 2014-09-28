@@ -4,7 +4,7 @@ import com.shashi.todo.model.BusinessException;
 import com.shashi.todo.model.SMS;
 
 public interface SmsService {
-	public void sendMessage(String to, String message);
+	public void sendMessage(String message);
 
 	public void register(SMS sms);
 

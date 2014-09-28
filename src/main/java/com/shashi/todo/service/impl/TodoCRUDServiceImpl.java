@@ -44,10 +44,10 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	public void create(Todo todo) throws BusinessException {
 		validateRequest(todo);
 		if (todoDao.create(todo)) {
-			searchService.createIndex(todo);
+			searchService.create(todo);
 			if (todo.isDone()) {
-				smsService.sendMessage("315-706-8730",
-						"Task \"" + todo.getTitle() + "\" is marked as done");
+				smsService.sendMessage("Task \"" + todo.getTitle()
+						+ "\" is marked as done");
 			}
 		} else {
 			throw new BusinessException(
@@ -65,7 +65,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 						"Deletion failed for id \"" + todo.getTodoId() + "\"",
 						TodoConstants.TODO_DELETION_FAILED);
 			}
-			searchService.deleteIndex(todo);
+			searchService.delete(todo);
 		} else {
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(),
@@ -113,10 +113,10 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 						"Updation failed for id \"" + todo.getTodoId() + "\"",
 						TodoConstants.TODO_UPDATE_FAILED);
 			}
-			searchService.createIndex(todo);
+			searchService.create(todo);
 			if (todo.isDone() && !isSMSSent) {
-				smsService.sendMessage("315-706-8730",
-						"Task \"" + todo.getTitle() + "\" is marked as done");
+				smsService.sendMessage("Task \"" + todo.getTitle()
+						+ "\" is marked as done");
 			}
 		}
 	}

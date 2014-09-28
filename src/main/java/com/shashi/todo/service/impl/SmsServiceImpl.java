@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -26,38 +27,31 @@ public class SmsServiceImpl implements SmsService {
 
 	final static Logger logger = Logger.getLogger(SmsServiceImpl.class);
 
-	private static final String TWILIO_TO = "TWILIO_FROM";
+	@Autowired
+	private TwilioRestClient twilioclient;
 
-	@Value("#{systemEnvironment['TWILIO_SID']}")
-	private String accountSID;
-
-	@Value("#{systemEnvironment['TWILIO_TOKEN']}")
-	private String authToken;
+	public static final String TWILIO_TO = "TWILIO_TO";
 
 	@Value("#{systemEnvironment['TWILIO_FROM']}")
 	private String from;
 
 	@Value("#{systemEnvironment['TWILIO_ENABLED']}")
-	private String isEnabled;
+	private String enabled;
 
 	@Override
-	public void sendMessage(String to, String message) {
-		if (!("Y").equals(isEnabled))
+	public void sendMessage(String message) {
+		if (!("Y").equals(enabled))
 			return;
 		try {
-			TwilioRestClient client = new TwilioRestClient(accountSID,
-					authToken);
-			Account mainAccount = client.getAccount();
+			Account mainAccount = twilioclient.getAccount();
 			MessageFactory messageFactory = mainAccount.getMessageFactory();
 			final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
 			messageParams.add(new BasicNameValuePair("To", System
 					.getProperty(TWILIO_TO)));
 			messageParams.add(new BasicNameValuePair("From", from));
 			messageParams.add(new BasicNameValuePair("Body", message));
-
 			messageFactory.create(messageParams);
 		} catch (TwilioRestException supressed) {
-			supressed.printStackTrace();
 			logger.error("Failed to send sms", supressed);
 		}
 	}
@@ -69,13 +63,11 @@ public class SmsServiceImpl implements SmsService {
 				String number = parseAsTelNum(sms.getDestination());
 				System.setProperty(TWILIO_TO, number);
 			}
-
 		}
 
 	}
 
 	private String parseAsTelNum(String source) {
-		// TODO validate the number
 		return source;
 	}
 
@@ -91,5 +83,13 @@ public class SmsServiceImpl implements SmsService {
 		throw new BusinessException(Response.Status.NOT_FOUND.getStatusCode(),
 				"No telephone number registered yet",
 				TodoConstants.NO_DATA_FOUND);
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public void setEnabled(String enabled) {
+		this.enabled = enabled;
 	}
 }

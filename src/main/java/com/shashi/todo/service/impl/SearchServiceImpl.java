@@ -5,7 +5,6 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.core.Update;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
 
@@ -33,7 +32,7 @@ public class SearchServiceImpl implements SearchService {
 	private JestClient jestClient;
 
 	@Override
-	public void createIndex(Todo todo) {
+	public void create(Todo todo) {
 		try {
 			if (indexExists()) {
 				Index index = new Index.Builder(todo).index("todo_app")
@@ -41,8 +40,7 @@ public class SearchServiceImpl implements SearchService {
 				jestClient.execute(index);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to add todo to the index", e);
 		}
 	}
 
@@ -58,8 +56,7 @@ public class SearchServiceImpl implements SearchService {
 			}
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to create index", e);
 		}
 		return false;
 	}
@@ -84,29 +81,22 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public void updateIndex(Todo todo) {
+	public void update(Todo todo) {
 		try {
-			String script = "{\n"
-					+ "    \"script\" : \"ctx._source.tags += tag\",\n"
-					+ "    \"params\" : {\n" + "        \"tag\" : \"blue\"\n"
-					+ "    }\n" + "}";
-
-			jestClient.execute(new Update.Builder(script).index("todo")
-					.type("todo").id(todo.getTodoId()).build());
+			delete(todo);
+			create(todo);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to update todo in indiex	");
 		}
 	}
 
 	@Override
-	public void deleteIndex(Todo todo) {
+	public void delete(Todo todo) {
 		try {
 			jestClient.execute(new Delete.Builder(todo.getTodoId())
 					.index("todo").type("todo").build());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to delete todo from the index", e);
 		}
 	}
 

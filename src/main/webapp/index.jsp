@@ -44,7 +44,7 @@ or deploy it to tomcat.
 
 
 ## Operations
- 							URI      						|     Method
+							URI								|		Method
  	create a Todo task :    services/todo/	 				|     POST
 	Search a Todo task :  	services/todo/search/{query}	|     GET
 	Search all Todo task :  services/todo/					|     GET
