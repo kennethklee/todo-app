@@ -67,9 +67,13 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 			}
 			searchService.delete(todo);
 		} else {
+			String message = "No todo item found";
+			if (todo != null && StringUtils.isBlank(todo.getTodoId())) {
+				message = "No todo item found with id \"" + todo.getTodoId()
+						+ "\"";
+			}
 			throw new BusinessException(
-					Response.Status.NOT_FOUND.getStatusCode(),
-					"No todo item found with id \"" + todo.getTodoId() + "\"",
+					Response.Status.NOT_FOUND.getStatusCode(), message,
 					TodoConstants.NO_DATA_FOUND);
 		}
 	}
@@ -81,6 +85,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
 					"Deletion failed", TodoConstants.TODO_ALL_DELETION_FAILED);
 		}
+		searchService.deleteAll();
 	}
 
 	@Override
@@ -91,7 +96,15 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 					"Title is a mandatory field",
 					TodoConstants.TODO_CREATE_REQ_INVALID);
 		}
-		return searchService.search(query);
+		List<Todo> todoList = searchService.search(query);
+		if (todoList != null && todoList.size() > 0) {
+			return todoList;
+		} else {
+			throw new BusinessException(
+					Response.Status.NOT_FOUND.getStatusCode(),
+					"No todo item found", TodoConstants.NO_DATA_FOUND);
+		}
+
 	}
 
 	@Override
@@ -145,7 +158,11 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		return true;
 	}
 
-	private boolean isExistingTodo(Todo todo) throws BusinessException {
+	private boolean isExistingTodo(Todo todo) {
+		if (todo == null
+				|| (todo != null && StringUtils.isBlank(todo.getTodoId()))) {
+			return false;
+		}
 		if (todoDao.findById(todo.getTodoId()) != null) {
 			return true;
 		}

@@ -53,7 +53,6 @@ public class TodoDAOImpl implements TodoDAO {
 	@Override
 	public boolean update(Todo todo) {
 		try {
-
 			Query query = new Query(Criteria.where("todoId").is(
 					todo.getTodoId()));
 			Update update = new Update();

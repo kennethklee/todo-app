@@ -94,7 +94,17 @@ public class SearchServiceImpl implements SearchService {
 	public void delete(Todo todo) {
 		try {
 			jestClient.execute(new Delete.Builder(todo.getTodoId())
-					.index("todo").type("todo").build());
+					.index("todo_app").type("todo").build());
+		} catch (Exception e) {
+			logger.error("Failed to delete todo from the index", e);
+		}
+	}
+
+	@Override
+	public void deleteAll() {
+		try {
+			jestClient.execute(new Delete.Builder("*").index("todo_app")
+					.type("todo").build());
 		} catch (Exception e) {
 			logger.error("Failed to delete todo from the index", e);
 		}

@@ -14,4 +14,6 @@ public interface SearchService {
 
 	public void delete(Todo todo);
 
+	public void deleteAll();
+
 }
