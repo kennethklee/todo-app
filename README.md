@@ -42,7 +42,7 @@ or deploy it to tomcat.
 
 
 ## Operations
- 							URI								|		Method
+ 							URI								|	Method
 	Add Twilio account	 :	services/twilio/				|	  POST
 	Get registered numbers:	services/twilio/				|	  GET
  	create a Todo task :    services/todo/	 				|     POST
@@ -53,5 +53,5 @@ or deploy it to tomcat.
 	Delete all Todo task :	services/todo/					|	  DELETE
 	
 
-Github : https://github.com/shashiranjan84/todo-spring-app
+Github : https://github.com/shashiranjan84/todo-app
 Heroku  app url: http://todo-spring-app.herokuapp.com/
