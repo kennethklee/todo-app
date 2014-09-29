@@ -16,8 +16,8 @@ import com.shashi.todo.model.SMS;
 import com.shashi.todo.service.SmsService;
 
 @Component
-@Path("/smsDestination")
-public class RegisterNumber {
+@Path("/twilio")
+public class TwilioCredential {
 
 	@Autowired
 	private SmsService smsService;
