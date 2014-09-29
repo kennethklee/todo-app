@@ -13,12 +13,12 @@ public interface TodoCRUDService {
 
 	public void update(Todo todo) throws BusinessException;
 
-	public void delete(Todo todo) throws BusinessException;
-
 	public List<Todo> findByName(String query) throws BusinessException;
 
 	public List<Todo> findAll();
 
 	public void deleteAll() throws BusinessException;
+
+	public void delete(String id) throws BusinessException;
 
 }

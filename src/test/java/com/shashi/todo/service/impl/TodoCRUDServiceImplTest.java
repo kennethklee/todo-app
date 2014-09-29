@@ -129,12 +129,12 @@ public class TodoCRUDServiceImplTest {
 			{
 				todoDao.findById(anyString);
 				result = new Todo();
-				todoDao.delete(todo);
+				todoDao.delete(todo.getTodoId());
 				result = true;
-				searchService.delete(todo);
+				searchService.delete(todo.getTodoId());
 			}
 		};
-		todoCRUDService.delete(todo);
+		todoCRUDService.delete(todo.getTodoId());
 	}
 
 	@Test(expected = BusinessException.class)
@@ -146,7 +146,7 @@ public class TodoCRUDServiceImplTest {
 	public void testDeleteNullId() throws BusinessException {
 		final Todo todo = new Todo();
 		todo.setTodoId("");
-		todoCRUDService.delete(todo);
+		todoCRUDService.delete(todo.getTodoId());
 	}
 
 	@Test

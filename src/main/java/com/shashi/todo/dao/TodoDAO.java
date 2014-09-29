@@ -12,11 +12,11 @@ public interface TodoDAO {
 
 	public boolean update(Todo todo);
 
-	public boolean delete(Todo todo);
-
 	public List<Todo> findByName(String query);
 
 	public List<Todo> findAll();
 
 	public boolean deleteAll();
+
+	public boolean delete(String id);
 }

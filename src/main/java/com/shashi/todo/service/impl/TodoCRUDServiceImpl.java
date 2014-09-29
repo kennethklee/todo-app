@@ -57,20 +57,20 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 	}
 
 	@Override
-	public void delete(Todo todo) throws BusinessException {
-		if (isExistingTodo(todo)) {
-			if (!todoDao.delete(todo)) {
+	public void delete(String id) throws BusinessException {
+
+		if (isExistingTodo(id)) {
+			if (!todoDao.delete(id)) {
 				throw new BusinessException(
 						Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-						"Deletion failed for id '" + todo.getTodoId() + "'",
+						"Deletion failed for id '" + id + "'",
 						TodoConstants.TODO_DELETION_FAILED);
 			}
-			searchService.delete(todo);
+			searchService.delete(id);
 		} else {
 			String message = "No todo item found";
-			if (todo != null && StringUtils.isBlank(todo.getTodoId())) {
-				message = "No todo item found with id '" + todo.getTodoId()
-						+ "'";
+			if (StringUtils.isBlank(id)) {
+				message = "No todo item found with id '" + id + "'";
 			}
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(), message,
@@ -162,12 +162,11 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		return true;
 	}
 
-	private boolean isExistingTodo(Todo todo) {
-		if (todo == null
-				|| (todo != null && StringUtils.isBlank(todo.getTodoId()))) {
+	private boolean isExistingTodo(String id) {
+		if (StringUtils.isBlank(id)) {
 			return false;
 		}
-		if (todoDao.findById(todo.getTodoId()) != null) {
+		if (todoDao.findById(id) != null) {
 			return true;
 		}
 		return false;

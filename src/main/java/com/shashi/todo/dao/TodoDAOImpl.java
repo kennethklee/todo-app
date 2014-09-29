@@ -73,10 +73,9 @@ public class TodoDAOImpl implements TodoDAO {
 	}
 
 	@Override
-	public boolean delete(Todo todo) {
+	public boolean delete(String id) {
 		try {
-			Query query = new Query(Criteria.where("todoId").is(
-					todo.getTodoId()));
+			Query query = new Query(Criteria.where("todoId").is(id));
 			mongoTemplate.remove(query, Todo.class);
 		} catch (Exception e) {
 			logger.error("Remove failed", e);

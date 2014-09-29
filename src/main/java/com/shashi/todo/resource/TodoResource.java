@@ -92,12 +92,8 @@ public class TodoResource {
 	@DELETE
 	@Path("{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response delete(@PathParam("id") String id, Todo todo)
-			throws BusinessException {
-		if (!StringUtils.isEmpty(id)) {
-			todo.setTodoId(id);
-		}
-		todoCRUDService.delete(todo);
+	public Response delete(@PathParam("id") String id) throws BusinessException {
+		todoCRUDService.delete(id);
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
 

@@ -84,7 +84,7 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public void update(Todo todo) {
 		try {
-			delete(todo);
+			delete(todo.getTodoId());
 			create(todo);
 		} catch (Exception e) {
 			logger.error("Failed to update todo in indiex	");
@@ -92,10 +92,10 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public void delete(Todo todo) {
+	public void delete(String id) {
 		try {
-			jestClient.execute(new Delete.Builder(todo.getTodoId())
-					.index("todo_app").type("todo").build());
+			jestClient.execute(new Delete.Builder(id).index("todo_app")
+					.type("todo").build());
 		} catch (Exception e) {
 			logger.error("Failed to delete todo from the index", e);
 		}

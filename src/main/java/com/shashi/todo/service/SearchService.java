@@ -12,8 +12,8 @@ public interface SearchService {
 
 	public List<Todo> search(String query);
 
-	public void delete(Todo todo);
-
 	public void deleteAll();
+
+	public void delete(String id);
 
 }

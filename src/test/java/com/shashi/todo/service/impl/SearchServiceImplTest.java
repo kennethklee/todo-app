@@ -130,6 +130,7 @@ public class SearchServiceImplTest {
 	@Test
 	public void testDeleteIndex() throws Exception {
 		Todo todo = new Todo();
+		todo.setTodoId("1234");
 		final JestResult jestResult = new JestResult(new Gson());
 		jestResult.setSucceeded(false);
 		new Expectations() {
@@ -137,7 +138,7 @@ public class SearchServiceImplTest {
 				jestClient.execute(((Delete) any));
 			}
 		};
-		subject.delete(todo);
+		subject.delete(todo.getTodoId());
 	}
 
 }
