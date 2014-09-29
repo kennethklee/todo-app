@@ -8,6 +8,7 @@ import io.searchbox.core.Search;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.indices.Refresh;
 
 import java.io.IOException;
 import java.util.List;
@@ -106,7 +107,8 @@ public class SearchServiceImpl implements SearchService {
 		try {
 			DeleteIndex deleteIndex = new DeleteIndex.Builder("todo_app").type(
 					"todo").build();
-			jestClient.execute(deleteIndex);
+			Refresh refresh = new Refresh.Builder().build();
+			jestClient.execute(refresh);
 		} catch (Exception e) {
 			logger.error("Failed to delete todo from the index", e);
 		}
