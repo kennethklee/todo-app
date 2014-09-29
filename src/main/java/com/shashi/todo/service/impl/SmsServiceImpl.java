@@ -57,10 +57,27 @@ public class SmsServiceImpl implements SmsService {
 	}
 
 	@Override
-	public void register(SMS sms) {
+	public void register(SMS sms) throws BusinessException {
 		if (sms != null) {
-			if (StringUtils.isNotEmpty(sms.getDestination())) {
-				String number = parseAsTelNum(sms.getDestination());
+			String number = sms.getDestination();
+			if (StringUtils.isNotEmpty(number)) {
+				try {
+					Account mainAccount = twilioclient.getAccount();
+					MessageFactory messageFactory = mainAccount
+							.getMessageFactory();
+					final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
+					messageParams.add(new BasicNameValuePair("To", number));
+					messageParams.add(new BasicNameValuePair("From", from));
+					messageParams.add(new BasicNameValuePair("Body",
+							TodoConstants.PHONE_REGISTRAION_MSG));
+					messageFactory.create(messageParams);
+				} catch (TwilioRestException e) {
+					throw new BusinessException(
+							Response.Status.BAD_REQUEST.getStatusCode(),
+							e.getErrorMessage(),
+							TodoConstants.NUMBER_REGISTRATION_FAILED);
+				}
+
 				System.setProperty(TWILIO_TO, number);
 			}
 		}

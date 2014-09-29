@@ -86,7 +86,7 @@ public class TodoResource {
 			todo.setTodoId(id);
 		}
 		todoCRUDService.update(todo);
-		return Response.status(Response.Status.OK).entity(todo).build();
+		return Response.status(Response.Status.OK).build();
 	}
 
 	@DELETE

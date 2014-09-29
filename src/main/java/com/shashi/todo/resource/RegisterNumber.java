@@ -16,7 +16,7 @@ import com.shashi.todo.model.SMS;
 import com.shashi.todo.service.SmsService;
 
 @Component
-@Path("/register")
+@Path("/smsDestination")
 public class RegisterNumber {
 
 	@Autowired
@@ -25,7 +25,7 @@ public class RegisterNumber {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response registerNumbers(SMS sms) {
+	public Response registerNumbers(SMS sms) throws BusinessException {
 		smsService.register(sms);
 		return Response.status(Response.Status.CREATED).entity(sms).build();
 	}

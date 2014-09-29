@@ -76,9 +76,18 @@ public class SmsServiceImplTest {
 	}
 
 	@Test
-	public void testRegister() {
+	public void testRegister() throws BusinessException, TwilioRestException {
 		SMS sms = new SMS();
 		sms.setDestination("destination");
+		new Expectations() {
+			{
+				twilioclient.getAccount();
+				result = account;
+				account.getMessageFactory();
+				result = messageFactory;
+				messageFactory.create((List<NameValuePair>) any);
+			}
+		};
 		smsServiceImpl.register(sms);
 		Assert.assertEquals("destination",
 				System.getProperty(SmsServiceImpl.TWILIO_TO));

@@ -52,7 +52,7 @@ or deploy it to tomcat.
 	Delete a Todo task :	services/todo/{id}				|	  DELETE
 	Delete all Todo task :	services/todo/					|	  DELETE
 	Register a number	 :	services/register/				|	  POST
-	Get registered number	 :	services/register/			|	  GET
+	Get registered number:	services/smsDestination/		|	  GET
 	
 
 Github : https://github.com/shashiranjan84/todo-spring-app

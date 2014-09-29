@@ -15,6 +15,8 @@ public class Todo implements Serializable {
 	private String title;
 	private String body;
 	private boolean done;
+	private Time createdTS;
+	private Time updatedTS;
 
 	public Todo() {
 		this.done = false;
@@ -50,6 +52,22 @@ public class Todo implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Time getCreatedTS() {
+		return createdTS;
+	}
+
+	public void setCreatedTS(Time createdTS) {
+		this.createdTS = createdTS;
+	}
+
+	public Time getUpdatedTS() {
+		return updatedTS;
+	}
+
+	public void setUpdatedTS(Time updatedTS) {
+		this.updatedTS = updatedTS;
 	}
 
 }

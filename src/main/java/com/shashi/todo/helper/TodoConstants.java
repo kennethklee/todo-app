@@ -7,4 +7,6 @@ public class TodoConstants {
 	public static final int TODO_DELETION_FAILED = 1003;
 	public static final int TODO_UPDATE_FAILED = 1004;
 	public static final int TODO_CREATE_FAILED = 1005;
+	public static final String PHONE_REGISTRAION_MSG = "This number is successfully registed for Todo app updates";
+	public static final int NUMBER_REGISTRATION_FAILED = 1006;
 }

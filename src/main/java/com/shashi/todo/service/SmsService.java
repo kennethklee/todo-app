@@ -6,7 +6,7 @@ import com.shashi.todo.model.SMS;
 public interface SmsService {
 	public void sendMessage(String message);
 
-	public void register(SMS sms);
+	public void register(SMS sms) throws BusinessException;
 
 	public SMS getRegisteredNumber() throws BusinessException;
 

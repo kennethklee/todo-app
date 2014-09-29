@@ -34,7 +34,7 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		if (todo == null) {
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(),
-					"No todo item found with id \"" + id + "\"",
+					"No todo item found with id '" + id + "'",
 					TodoConstants.NO_DATA_FOUND);
 		}
 		return todo;
@@ -46,8 +46,8 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		if (todoDao.create(todo)) {
 			searchService.create(todo);
 			if (todo.isDone()) {
-				smsService.sendMessage("Task \"" + todo.getTitle()
-						+ "\" is marked as done");
+				smsService.sendMessage("Task '" + todo.getTitle()
+						+ "' is marked as done");
 			}
 		} else {
 			throw new BusinessException(
@@ -62,15 +62,15 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 			if (!todoDao.delete(todo)) {
 				throw new BusinessException(
 						Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-						"Deletion failed for id \"" + todo.getTodoId() + "\"",
+						"Deletion failed for id '" + todo.getTodoId() + "'",
 						TodoConstants.TODO_DELETION_FAILED);
 			}
 			searchService.delete(todo);
 		} else {
 			String message = "No todo item found";
 			if (todo != null && StringUtils.isBlank(todo.getTodoId())) {
-				message = "No todo item found with id \"" + todo.getTodoId()
-						+ "\"";
+				message = "No todo item found with id '" + todo.getTodoId()
+						+ "'";
 			}
 			throw new BusinessException(
 					Response.Status.NOT_FOUND.getStatusCode(), message,
@@ -117,19 +117,23 @@ public class TodoCRUDServiceImpl implements TodoCRUDService {
 		boolean isSMSSent = false;
 		Todo todoDB = todoDao.findById(todo.getTodoId());
 		if (todoDB == null) {
-			create(todo);
+			throw new BusinessException(
+					Response.Status.NOT_FOUND.getStatusCode(), "Todo with id '"
+							+ todo.getTodoId() + "' not found",
+					TodoConstants.TODO_UPDATE_FAILED);
 		} else {
 			isSMSSent = todoDB.isDone();
 			if (!todoDao.update(todo)) {
 				throw new BusinessException(
 						Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-						"Updation failed for id \"" + todo.getTodoId() + "\"",
+						"Updation failed for id '" + todo.getTodoId() + "'",
 						TodoConstants.TODO_UPDATE_FAILED);
 			}
-			searchService.create(todo);
+			todo.setCreatedTS(todoDB.getCreatedTS());
+			searchService.update(todo);
 			if (todo.isDone() && !isSMSSent) {
-				smsService.sendMessage("Task \"" + todo.getTitle()
-						+ "\" is marked as done");
+				smsService.sendMessage("Task '" + todo.getTitle()
+						+ "' is marked as done");
 			}
 		}
 	}
