@@ -54,5 +54,4 @@ or deploy it to tomcat.
 	
 
 Github : https://github.com/shashiranjan84/todo-app
-
 Heroku  app url: http://todo-spring-app.herokuapp.com/
