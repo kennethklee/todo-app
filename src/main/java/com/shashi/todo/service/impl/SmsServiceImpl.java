@@ -9,8 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.shashi.todo.helper.TodoConstants;
@@ -27,30 +25,28 @@ public class SmsServiceImpl implements SmsService {
 
 	final static Logger logger = Logger.getLogger(SmsServiceImpl.class);
 
-	@Autowired
-	private TwilioRestClient twilioclient;
-
 	public static final String TWILIO_TO = "TWILIO_TO";
 
-	@Value("#{systemEnvironment['TWILIO_FROM']}")
-	private String from;
+	public static final String TWILIO_FROM = "TWILIO_FROM";
 
-	@Value("#{systemEnvironment['TWILIO_ENABLED']}")
-	private String enabled;
+	public static final String TWILIO_ENABLED = "TWILIO_ENABLED";
+
+	public static final String TWILIO_SID = "TWILIO_SID";
+
+	public static final String TWILIO_TOKEN = "TWILIO_TOKEN";
 
 	@Override
 	public void sendMessage(String message) {
-		if (!("Y").equals(enabled))
+		String enabled = System.getenv(TWILIO_ENABLED);
+		String to = System.getProperty(TWILIO_TO);
+		String from = System.getProperty(TWILIO_FROM);
+		String sid = System.getProperty(TWILIO_SID);
+		String token = System.getProperty(TWILIO_TOKEN);
+
+		if (!(TodoConstants.ENABLED).equals(enabled))
 			return;
 		try {
-			Account mainAccount = twilioclient.getAccount();
-			MessageFactory messageFactory = mainAccount.getMessageFactory();
-			final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
-			messageParams.add(new BasicNameValuePair("To", System
-					.getProperty(TWILIO_TO)));
-			messageParams.add(new BasicNameValuePair("From", from));
-			messageParams.add(new BasicNameValuePair("Body", message));
-			messageFactory.create(messageParams);
+			sendMessage(to, from, sid, token, message);
 		} catch (TwilioRestException supressed) {
 			logger.error("Failed to send sms", supressed);
 		}
@@ -59,54 +55,63 @@ public class SmsServiceImpl implements SmsService {
 	@Override
 	public void register(SMS sms) throws BusinessException {
 		if (sms != null) {
-			String number = sms.getDestination();
-			if (StringUtils.isNotEmpty(number)) {
+			String to = sms.getTo();
+			String from = sms.getFrom();
+			String sid = sms.getSid();
+			String token = sms.getToken();
+			String enabled = (sms.getEnabled()) ? TodoConstants.ENABLED
+					: TodoConstants.DISABLED;
+			if (StringUtils.isNotEmpty(to) && StringUtils.isNotEmpty(from)) {
 				try {
-					Account mainAccount = twilioclient.getAccount();
-					MessageFactory messageFactory = mainAccount
-							.getMessageFactory();
-					final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
-					messageParams.add(new BasicNameValuePair("To", number));
-					messageParams.add(new BasicNameValuePair("From", from));
-					messageParams.add(new BasicNameValuePair("Body",
-							TodoConstants.PHONE_REGISTRAION_MSG));
-					messageFactory.create(messageParams);
+					sendMessage(to, from, sid, token,
+							TodoConstants.PHONE_REGISTRAION_MSG);
 				} catch (TwilioRestException e) {
+					System.setProperty(TWILIO_ENABLED, TodoConstants.DISABLED);
 					throw new BusinessException(
 							Response.Status.BAD_REQUEST.getStatusCode(),
 							e.getErrorMessage(),
 							TodoConstants.NUMBER_REGISTRATION_FAILED);
 				}
-
-				System.setProperty(TWILIO_TO, number);
+				setSMSProperty(to, from, sid, token, enabled);
 			}
 		}
 
 	}
 
-	private String parseAsTelNum(String source) {
-		return source;
+	private void setSMSProperty(String to, String from, String sid,
+			String token, String enabled) {
+		System.setProperty(TWILIO_TO, to);
+		System.setProperty(TWILIO_FROM, from);
+		System.setProperty(TWILIO_SID, sid);
+		System.setProperty(TWILIO_TOKEN, token);
+		System.setProperty(TWILIO_ENABLED, enabled);
+	}
+
+	private void sendMessage(String to, String from, String sid, String token,
+			String message) throws TwilioRestException {
+		TwilioRestClient client = new TwilioRestClient(sid, token);
+		Account mainAccount = client.getAccount();
+		MessageFactory messageFactory = mainAccount.getMessageFactory();
+		final List<NameValuePair> messageParams = new ArrayList<NameValuePair>();
+		messageParams.add(new BasicNameValuePair("To", to));
+		messageParams.add(new BasicNameValuePair("From", from));
+		messageParams.add(new BasicNameValuePair("Body", message));
+		messageFactory.create(messageParams);
 	}
 
 	@Override
 	public SMS getRegisteredNumber() throws BusinessException {
-
 		String number = System.getProperty(TWILIO_TO);
 		if (StringUtils.isNotEmpty(number)) {
 			SMS sms = new SMS();
-			sms.setDestination(number);
+			sms.setTo(System.getProperty(TWILIO_TO));
+			sms.setFrom(System.getProperty(TWILIO_FROM));
+			sms.setEnabled(TodoConstants.ENABLED.equals(System
+					.getProperty(TWILIO_ENABLED)));
 			return sms;
 		}
 		throw new BusinessException(Response.Status.NOT_FOUND.getStatusCode(),
 				"No telephone number registered yet",
 				TodoConstants.NO_DATA_FOUND);
-	}
-
-	public void setFrom(String from) {
-		this.from = from;
-	}
-
-	public void setEnabled(String enabled) {
-		this.enabled = enabled;
 	}
 }

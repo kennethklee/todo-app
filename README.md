@@ -1,7 +1,7 @@
 todo-spring-app
 ===============
 
-todo-spring-app is simple Json based RESTFul web services hosted on Tomcat. This app provides simple CRUD operation to manage Todo task list. Tasks are stored as document in MongoDB and indexed into ElasticSearch server. A sms is sent to registered phone when a task is saved in done status.
+todo-spring-app is simple Json based RESTFul web services hosted on Tomcat. This app provides simple CRUD operation to manage Todo task list. Tasks are stored as document in MongoDB and indexed into ElasticSearch server. A sms is sent to registered phone when a task is saved in done status using Twilio api.
 
 Todo structure
 {
@@ -12,7 +12,13 @@ Todo structure
 
 Phone number registration json structure
 {
-"destination" :"a valid phone number with coutry code"
+{
+  "from" : "Twilio verified number",
+  "to" : "Twilio verified number",
+  "sid" : "Twilio account sid",
+  "token" : "Twilio account token",
+ "enabled": true or false
+}
 }
 
 ## Running the application locally
