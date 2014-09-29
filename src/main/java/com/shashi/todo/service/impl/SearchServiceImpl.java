@@ -67,7 +67,7 @@ public class SearchServiceImpl implements SearchService {
 		try {
 			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			searchSourceBuilder.query(QueryBuilders.multiMatchQuery(query,
-					"title^3", "body"));
+					"title^5", "body"));
 
 			Search search = new Search.Builder(searchSourceBuilder.toString())
 					.addIndex("todo_app").addType("todo").build();
@@ -104,8 +104,8 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public void deleteAll() {
 		try {
-			DeleteIndex deleteIndex = new DeleteIndex.Builder("todo_app")
-					.build();
+			DeleteIndex deleteIndex = new DeleteIndex.Builder("todo_app").type(
+					"todo").build();
 			jestClient.execute(deleteIndex);
 		} catch (Exception e) {
 			logger.error("Failed to delete todo from the index", e);

@@ -46,10 +46,18 @@ public class SmsServiceImpl implements SmsService {
 		if (!(TodoConstants.ENABLED).equals(enabled))
 			return;
 		try {
-			sendMessage(to, from, sid, token, message);
-		} catch (TwilioRestException supressed) {
+			if (isEnabled()) {
+				sendMessage(to, from, sid, token, message);
+			}
+
+		} catch (Exception supressed) {
 			logger.error("Failed to send sms", supressed);
 		}
+	}
+
+	private boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
